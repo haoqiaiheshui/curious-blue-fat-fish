@@ -1,0 +1,10 @@
+{
+  "napcatDir": "<NAPCAT_DIR>",
+  "napcatExe": "NapCatWinBootMain.exe",
+  "account": "<BOT_QQ>",
+  "intervalMinutes": 2,
+  "httpUrl": "http://127.0.0.1:3000",
+  "accessToken": "<ONEBOT_TOKEN>",
+  "ntfyTopic": "<NTFY_TOPIC>",
+  "ntfyPush": true
+}
