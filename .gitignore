@@ -1,0 +1,13 @@
+# 真实配置（含账号/密钥）
+config.json
+*.config.json
+!config/*.example.json
+**/config.json
+**/state.json
+**/*.log
+**/*.out
+**/*.err
+node_modules/
+edge-profile/
+*.png
+!docs/images/*.png
