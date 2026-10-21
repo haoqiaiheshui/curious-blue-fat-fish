@@ -1,0 +1,34 @@
+{
+  "ownerQQ": "<OWNER_QQ>",
+  "allow": {
+    "groups": ["<GROUP_ID_1>", "<GROUP_ID_2>"],
+    "private": ["<OWNER_QQ>"]
+  },
+  "privateWhitelistMode": "friends",
+  "requests": {
+    "autoAcceptGroupInvite": false,
+    "autoAcceptFriend": false,
+    "notifyOwner": true
+  },
+  "mirrorToOwner": false,
+  "requireOwnerApprovalForPrivate": false,
+  "socialV2": {
+    "sleepWindow": { "enabled": true, "start": "00:30", "end": "07:30" },
+    "wake": {
+      "recommendedProbability": 0.3,
+      "maxWakePerHour": 20,
+      "maxWakePerMinute": 1
+    },
+    "send": { "maxSendPerHour": 60 }
+  },
+  "snowluma": {
+    "httpUrl": "http://127.0.0.1:3000",
+    "accessToken": "<ONEBOT_TOKEN>"
+  },
+  "snowlumaWebui": {
+    "baseUrl": "http://127.0.0.1:5099",
+    "user": "admin",
+    "password": "<SNOWLUMA_PASSWORD>",
+    "uin": "<BOT_QQ>"
+  }
+}
