@@ -5,6 +5,7 @@
 import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ensureEmulator } from './lib.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const CFG = JSON.parse(readFileSync(join(HERE, 'config.json'), 'utf8').replace(/^\uFEFF/, ''))
@@ -48,6 +49,8 @@ async function runOnce() {
   if (!pick) { log('没有可玩的 App'); return }
   log(`今天玩：${pick.name}（${pick.minutes} 分钟）`)
   try {
+    const ready = await ensureEmulator()
+    if (!ready) { log('模拟器没起来，跳过今天'); return }
     const mod = await import(`./${pick.module}`)
     const result = pick.run === 'browse' ? await mod.browse(pick.minutes, { like: true })
       : pick.run === 'listen' ? await mod.listen(pick.minutes)
