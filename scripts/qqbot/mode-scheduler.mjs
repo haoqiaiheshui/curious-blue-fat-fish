@@ -50,15 +50,30 @@ function check() {
   const st = readJSON(STATE, { lastSleepDay: '', lastWakeDay: '' })
   const day = today()
   const sleeping = inSleepWindow()
-  const cur = hhmm()
-  if (sleeping && st.lastSleepDay !== day) {
-    // 刚进入睡眠窗口（或今天还没切过）
-    log(`进入睡眠时段（${CFG.sleepStart}），切精简模式`)
-    if (setMode('lite')) { st.lastSleepDay = day; writeFileSync(STATE, JSON.stringify(st, null, 2), 'utf8') }
-  } else if (!sleeping && st.lastWakeDay !== day) {
-    // 已过睡眠窗口，切完整
-    log(`睡眠结束（${CFG.sleepEnd} 之后），切完整模式`)
-    if (setMode('full')) { st.lastWakeDay = day; writeFileSync(STATE, JSON.stringify(st, null, 2), 'utf8') }
+  const cur = nowMin()
+  const a = toMin(CFG.sleepStart)
+  const b = toMin(CFG.sleepEnd)
+
+  // 1) 睡眠时段内 → 切精简（每天只切一次）
+  if (sleeping) {
+    if (st.lastSleepDay !== day) {
+      log(`进入睡眠时段（${CFG.sleepStart}），切精简模式`)
+      if (setMode('lite')) {
+        st.lastSleepDay = day
+        writeFileSync(STATE, JSON.stringify(st, null, 2), 'utf8')
+      }
+    }
+    return
+  }
+
+  // 2) 非睡眠时段 → 只有【过了睡眠结束时间】才允许切完整，避免 00:00 刚过午夜就误触发
+  const wakeEligible = (a <= b) ? (cur >= b) : (cur >= b && cur < a)
+  if (!wakeEligible) return
+  if (st.lastWakeDay === day) return
+  log(`睡眠结束（${CFG.sleepEnd} 之后，现在 ${hhmm()}），切完整模式`)
+  if (setMode('full')) {
+    st.lastWakeDay = day
+    writeFileSync(STATE, JSON.stringify(st, null, 2), 'utf8')
   }
 }
 
