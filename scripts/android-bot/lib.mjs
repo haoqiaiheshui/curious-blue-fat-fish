@@ -5,7 +5,7 @@
 // 用法：import { adb, dump, tap, findText, findById, launch, back, home, swipe } from './lib.mjs'
 import { execFileSync } from 'node:child_process'
 
-export const ADB = 'C:\\leidian\\LDPlayer9\\adb.exe'
+export const ADB = 'C:\\path\\to\\ldplayer\\adb.exe'
 export const SERIAL = process.env.ANDROID_SERIAL || 'emulator-5554'
 
 export function adb(...args) {
@@ -22,6 +22,23 @@ export function shell(cmd) {
 }
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+// 确保模拟器在线：不在线就自动启动 LDPlayer14 实例并等待启动完成（最多 150 秒）
+export async function ensureEmulator() {
+  for (let i = 0; i < 3; i++) {
+    const out = adb('shell', 'echo ready')
+    if (out.includes('ready')) return true
+    if (i === 0) {
+      try {
+        execFileSync('C:\\path\\to\\ldplayer\\dnplayer.exe', ['index=0'], {
+          cwd: 'C:\\path\\to\\ldplayer', timeout: 20000, windowsHide: true, detached: true, stdio: 'ignore'
+        })
+      } catch {}
+    }
+    await sleep(15000)
+  }
+  return false
+}
 
 export function tap(x, y) { shell(`input tap ${Math.round(x)} ${Math.round(y)}`) }
 export function swipe(x1, y1, x2, y2, ms = 300) { shell(`input swipe ${Math.round(x1)} ${Math.round(y1)} ${Math.round(x2)} ${Math.round(y2)} ${ms}`) }
